@@ -52,27 +52,57 @@ def md2html(line:str):
     if line=="":
         return "<br>"
     else:
-        text = boldfaceDetector(line)
-        text = headerDetector(text)
+        text = headerDetector(line)
+        text = boldfaceDetector(text)
         text = ulistDetector(text)
-        if text.startswith("<h") or text.startswith("<li"):
+        text = linkDetector(text)
+        if text.startswith("<h") or text.startswith("<li>"):
             return text
         else:
             return "<p>" + text+ "</p>"
 
+def linkDetector(text:str):
+    """
+    text: string to be analized
+
+    The function checks if the string contains links, replacing the \[]() with the <a href=""> tag in each instance
+    """
+    matches = re.finditer(r"\[[^\]]*\]"+r"\([^\)]*\)",text)
+    for match in matches:
+        visible = re.search(r"\[(.*)\]",match.group(0))
+        link = re.search(r"\(.*\)",match.group(0))
+        text = text.replace(match.group(0),f'<a href="{link.group(0)[1:-1]}">{visible.group(0)[1:-1]}</a>')
+    return text
+
 def ulistDetector(text:str):
+    """
+    text: string to be analized
+
+    The function checks if the string is a list item, removes the * and wraps the text in the <li> tag\n
+    """
     match = re.match(r"\* (.*)",text)
     if match != None:
         text ="<li>"+match.group(0)[2:]+"</li>"
     return text
     
 def boldfaceDetector(text:str):
+    """
+    text: string to be analized
+
+    The function checks if the string contains bold text and replaces each ** with the <b>|</b> tag
+    """
     matches = re.finditer(r"\*\*([^\*]*)\*\*",text)
     for match in matches:
         text =text.replace(match.group(0),"<b>"+match.group(0)[2:-2]+"</b>")
     return text
 
 def headerDetector(text:str):
+    """
+    text: string to be analized
+
+    The function checks if the string is a header and returns the html equivalent using the <h> tag\n
+    The number of # in the beginning of the string determines the level of the header
+    """
     match = re.match(r"^#+ (.*)",text)
     if match != None:
         text = match.group(0)
@@ -81,9 +111,20 @@ def headerDetector(text:str):
     return text
 
 def headerCount(text:str):
+    """
+    text: string to be counted
+
+    The function calls returns the number of # in the beginning of the string
+    """
     return countCall(text.strip(),0)
 
 def countCall(text:str,index:int):
+    """
+    text: string to be counted
+    index: index of the string
+
+    The function is a recursive call that counts the number of # in the beginning of the string
+    """
     if text[index] == "#":
        return 1 + countCall(text,index+1)
     else:
