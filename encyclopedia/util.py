@@ -40,12 +40,12 @@ def get_entry(title):
     lastline:str = ""
     for line in lines:
         text = md2html(line)
-        if (not lastline.startswith("<li>")) and text.startswith("<li>"):
-            text = "<ul>"+text
-        elif (lastline.startswith("<li>") and (not text.startswith("<li>"))):
-            text = "</ul>"+text
+        if (not lastline.startswith("* ")) and line.startswith("* "):
+            text = "<ul>\n"+text
+        elif (lastline.startswith("* ") and (not line.startswith("* "))):
+            text = "</ul>\n"+text
         html.append(text)
-        lastline = text
+        lastline = line 
     return html
 
 def md2html(line:str):
