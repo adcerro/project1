@@ -1,0 +1,13 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>Not Found</title>
+        <link href="{% static 'encyclopedia/nfstyle.css' %}" rel="stylesheet">
+    </head>
+    <body>
+        <img src="{% static 'encyclopedia/notfound.jpeg' %}" alt="a detective snake">
+        <h1>Not Found</h1>
+        <p>An entry for "{{ title }}" could not be found.</p>
+</html>
