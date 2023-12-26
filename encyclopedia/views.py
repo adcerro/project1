@@ -9,7 +9,7 @@ def index(request):
         "entries": util.list_entries()
     })
 
-def specific(request, title):
+def entry(request, title):
     page = util.get_entry(title)
     if(page == None):
         return render(request, "encyclopedia/notfound.html", {
