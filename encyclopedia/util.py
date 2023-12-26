@@ -33,12 +33,20 @@ def get_entry(title):
     try:
         f = default_storage.open(f"entries/{title}.md")
         lines = f.read().decode("utf-8").splitlines()
-        html = []
-        for line in lines:
-            html.append(md2html(line))
-        return html
     except FileNotFoundError:
         return None
+    
+    html:str = []
+    lastline:str = ""
+    for line in lines:
+        text = md2html(line)
+        if (not lastline.startswith("<li>")) and text.startswith("<li>"):
+            text = "<ul>"+text
+        elif (lastline.startswith("<li>") and (not text.startswith("<li>"))):
+            text = "</ul>"+text
+        html.append(text)
+        lastline = text
+    return html
 
 def md2html(line:str):
     if line=="":
@@ -46,10 +54,17 @@ def md2html(line:str):
     else:
         text = boldfaceDetector(line)
         text = headerDetector(text)
-        if text.startswith("<h"):
+        text = ulistDetector(text)
+        if text.startswith("<h") or text.startswith("<li"):
             return text
         else:
             return "<p>" + text+ "</p>"
+
+def ulistDetector(text:str):
+    match = re.match(r"\* (.*)",text)
+    if match != None:
+        text ="<li>"+match.group(0)[2:]+"</li>"
+    return text
     
 def boldfaceDetector(text:str):
     matches = re.finditer(r"\*\*([^\*]*)\*\*",text)
