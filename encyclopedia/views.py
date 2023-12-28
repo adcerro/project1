@@ -1,14 +1,14 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django import forms
-from django.urls import reverse
 from random import choice
 
 from . import util
 
 class CreateForm(forms.Form):
-    title = forms.CharField(label="Entry Title")
-    body = forms.CharField(label="Entry Content", widget=forms.Textarea)
+    common={'class': 'form-control', 'style': 'margin-bottom:5px;margin-top:5px'}
+    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Page Title'}|common))
+    content = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Page Content'}|common))
 
 def create(request):
     return render(request, "encyclopedia/create.html",{
