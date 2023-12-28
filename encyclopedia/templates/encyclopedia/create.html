@@ -1,0 +1,11 @@
+{% extends "encyclopedia/layout.html" %}
+{% block title%}
+Create New Page
+{% endblock %}
+{% block body %}
+<form>
+    {{csfr_token}}
+    {{form}}
+    <input type="submit">
+</form>
+{% endblock %}

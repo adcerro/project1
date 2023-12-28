@@ -2,28 +2,23 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django import forms
 from django.urls import reverse
+from random import choice
 
 from . import util
 
 class CreateForm(forms.Form):
-    query = forms.CharField(label="Search Encyclopedia")
+    title = forms.CharField(label="Entry Title")
+    body = forms.CharField(label="Entry Content", widget=forms.Textarea)
+
+def create(request):
+    return render(request, "encyclopedia/create.html",{
+        "form": CreateForm()
+    })
 
 def index(request):
-    if request.method == "GET":
-        query = request.GET.get('q')
-        if query in util.list_entries():
-            return HttpResponseRedirect(f"wiki/{query}")
-        elif query != None:
-            return search(request,query)
     return render(request, "encyclopedia/index.html", {"entries": util.list_entries(),})
 
 def entry(request, title):
-    if request.method == "GET":
-        query = request.GET.get('q')
-        if query in util.list_entries():
-            return HttpResponseRedirect(query)
-        elif query != None:
-            return search(request,query)
     page = util.get_entry(title)
     if(page == None):
         return render(request, "encyclopedia/notfound.html", {
@@ -36,8 +31,14 @@ def entry(request, title):
         })
     
 def search(request,query):
-    return render(request,"encyclopedia/search.html",{
-        "query": query,
-        "entries": [entry for entry in util.list_entries() if query.lower() in entry.lower()],
-    })
+    query = request.GET.get('q')
+    if query in util.list_entries():
+        return HttpResponseRedirect(f"wiki/{query}")
+    elif query != None:
+        return render(request,"encyclopedia/search.html",{
+            "query": query,
+            "entries": [entry for entry in util.list_entries() if query.lower() in entry.lower()],})
+
+def random(request):
+    return HttpResponseRedirect(f"wiki/{choice(util.list_entries())}")
     
