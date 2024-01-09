@@ -1,13 +1,15 @@
 {% extends "encyclopedia/layout.html" %}
 {% block title %}
-{{title}}
+Edit: {{title}}
 {% endblock%}
 {% block body %}
 <form method="post">
     {% csrf_token %}
-    <div class="form-group">
+    <div class="form-group mx-1 my-1">
         {{form.content.as_field_group}}
     </div>
-    <input type="submit" class="btn btn-primary btn-block" value="Save">
+    <div class="d-grid gap-2">
+        <input type="submit" class="btn btn-primary" value="Save">
+    </div>
 </form>
 {% endblock %}

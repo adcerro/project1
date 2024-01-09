@@ -36,9 +36,9 @@ def get_entry(title):
         return None
     
 def entry2html(title):
-    lines = get_entry(title).splitlines()
-    
-    if lines == None:
+    try:
+        lines = get_entry(title).splitlines()
+    except:
         return None
     
     html:str = []

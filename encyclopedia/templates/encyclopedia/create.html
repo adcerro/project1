@@ -5,15 +5,17 @@ Create New Page
 {% block body %}
 <form method="post">
     {% csrf_token %}
-    <div class="form-group">
+    <div class="form-group mx-1 my-1">
     {{form.title.as_field_group}}
     {% if invalid %}
     <div class="alert alert-danger">An entry with this title already exists!</div>
     {% endif %}
     </div>
-    <div class="form-group">
+    <div class="form-group mx-1 my-1">
     {{form.content.as_field_group}}
     </div>
-    <input type="submit" class="btn btn-primary btn-block">
+    <div class="d-grid gap-2">
+    <input type="submit" class="btn btn-primary btn-block" value="Create">
+    </div>
 </form>
 {% endblock %}

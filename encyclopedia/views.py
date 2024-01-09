@@ -4,7 +4,7 @@ from django import forms
 from random import choice
 
 from . import util
-common={'class': 'form-control', 'style': 'margin-bottom:5px;margin-top:5px'}   
+common={'class': 'form-control'}   
 class CreateForm(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Page Title'}|common))
     content = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Page Content (in markdown)'}|common))
@@ -58,6 +58,8 @@ def edit(request,entry):
     if request.method == "POST":
         form = EditForm(request.POST)
         if form.is_valid():
-            return HttpResponseRedirect(f"{entry}")
-    return render(request,"encyclopedia/edit.html",{"title": f"Edit: {entry}","form": EditForm(initial={'content': util.get_entry(entry)})})
+            util.save_entry(title=entry,content=form.cleaned_data["content"].replace("\r\n","\n"))
+            return HttpResponseRedirect(f"../wiki/{entry}")
+    else:
+        return render(request,"encyclopedia/edit.html",{"title": entry,"form": EditForm(initial={'content': util.get_entry(entry)})})
     
