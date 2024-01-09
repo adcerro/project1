@@ -1,0 +1,13 @@
+{% extends "encyclopedia/layout.html" %}
+{% block title %}
+{{title}}
+{% endblock%}
+{% block body %}
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        {{form.content.as_field_group}}
+    </div>
+    <input type="submit" class="btn btn-primary btn-block" value="Save">
+</form>
+{% endblock %}

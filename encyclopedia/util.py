@@ -31,9 +31,14 @@ def get_entry(title):
     entry exists, the function returns None.
     """
     try:
-        f = default_storage.open(f"entries/{title}.md")
-        lines = f.read().decode("utf-8").splitlines()
+        return default_storage.open(f"entries/{title}.md").read().decode("utf-8")
     except FileNotFoundError:
+        return None
+    
+def entry2html(title):
+    lines = get_entry(title).splitlines()
+    
+    if lines == None:
         return None
     
     html:str = []

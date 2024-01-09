@@ -4,13 +4,15 @@ from django import forms
 from random import choice
 
 from . import util
-
-    
+common={'class': 'form-control', 'style': 'margin-bottom:5px;margin-top:5px'}   
 class CreateForm(forms.Form):
-    common={'class': 'form-control', 'style': 'margin-bottom:5px;margin-top:5px'}
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Page Title'}|common))
     content = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Page Content (in markdown)'}|common))
 
+class EditForm(forms.Form):
+    content = forms.CharField(widget=forms.Textarea(attrs=common))
+    
+    
 def create(request):
     if request.method == "POST":
         form = CreateForm(request.POST)
@@ -30,7 +32,7 @@ def index(request):
     return render(request, "encyclopedia/index.html", {"entries": util.list_entries(),})
 
 def entry(request, title):
-    page = util.get_entry(title)
+    page = util.entry2html(title)
     if(page == None):
         return render(request, "encyclopedia/notfound.html", {
         "title": title
@@ -51,4 +53,11 @@ def search(request,query):
 
 def random(request):
     return HttpResponseRedirect(f"wiki/{choice(util.list_entries())}")
+
+def edit(request,entry):
+    if request.method == "POST":
+        form = EditForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect(f"{entry}")
+    return render(request,"encyclopedia/edit.html",{"title": f"Edit: {entry}","form": EditForm(initial={'content': util.get_entry(entry)})})
     

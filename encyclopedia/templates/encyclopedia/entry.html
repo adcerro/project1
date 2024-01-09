@@ -6,4 +6,5 @@
 {% for key in content%}
 {{key | safe}}
 {% endfor %}
+<a href="{% url 'encyclopedia:edit' entry=title%}">Edit this page ✏</a>
 {% endblock %}
